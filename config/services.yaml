@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+# See also https://symfony.com/doc/current/service_container/import.html
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    app.auth_token_ttl_seconds: '%env(int:AUTH_TOKEN_TTL_SECONDS)%'
+    app.auth_refresh_token_ttl_seconds: '%env(int:AUTH_REFRESH_TOKEN_TTL_SECONDS)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+
+    App\Application\Contracts\UserRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineUserRepository'
+    App\Application\Contracts\TokenRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineTokenRepository'
+    App\Application\Contracts\DeckRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineDeckRepository'
+    App\Application\Contracts\FlashcardRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineFlashcardRepository'
+    App\Application\Contracts\StudySessionRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineStudySessionRepository'
+    App\Application\Contracts\CardReviewRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineCardReviewRepository'
+    App\Application\Contracts\XpHistoryRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineXpHistoryRepository'
+    App\Application\Contracts\PurchaseRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrinePurchaseRepository'
+    App\Application\Contracts\ChallengeRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineChallengeRepository'
+    App\Application\Contracts\ChallengeParticipantRepositoryInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineChallengeParticipantRepository'
+    App\Application\Contracts\AiCardGeneratorInterface: '@App\Infrastructure\Ai\TemplateAiCardGenerator'
+    App\Application\Contracts\AnalyticsReadModelInterface: '@App\Infrastructure\Persistence\Doctrine\DoctrineAnalyticsReadModel'
+
+    App\Infrastructure\Persistence\Doctrine\DoctrineTokenRepository:
+        arguments:
+            $tokenTtlSeconds: '%app.auth_token_ttl_seconds%'
+            $refreshTokenTtlSeconds: '%app.auth_refresh_token_ttl_seconds%'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones

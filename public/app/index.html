@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estuda+ App</title>
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Navegacao web do Estuda+ para desktop e smartphone.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="aurora"></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">E+</span>
+        <div>
+          <h1>Estuda+</h1>
+          <p>MVP Fase 3</p>
+        </div>
+      </div>
+      <nav id="menu">
+        <button data-view="dashboard" class="menu-item active">Dashboard</button>
+        <button data-view="auth" class="menu-item">Login</button>
+        <button data-view="profile" class="menu-item">Perfil</button>
+        <button data-view="decks" class="menu-item">Decks</button>
+        <button data-view="study" class="menu-item">Estudo</button>
+        <button data-view="marketplace" class="menu-item">Marketplace</button>
+        <button data-view="challenges" class="menu-item">Desafios</button>
+        <button data-view="tutor" class="menu-item">Tutor</button>
+        <button data-view="analytics" class="menu-item">Analytics</button>
+      </nav>
+      <small class="sidebar-foot">Web + smartphone ready</small>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h2 id="view-title">Dashboard</h2>
+          <p id="view-subtitle">Visao geral do seu progresso</p>
+        </div>
+        <div class="top-actions">
+          <div class="chip" id="user-chip">Nao autenticado</div>
+          <button id="install-btn" class="ghost hidden" type="button">Instalar App</button>
+          <button id="logout-btn" class="ghost" type="button">Logout</button>
+        </div>
+      </header>
+
+      <section id="status-box" class="status hidden"></section>
+
+      <section id="view-dashboard" class="view active">
+        <div class="panel-grid three">
+          <article class="card metric">
+            <p>Sessoes finalizadas</p>
+            <strong id="dash-sessions">0</strong>
+          </article>
+          <article class="card metric">
+            <p>XP total</p>
+            <strong id="dash-xp">0</strong>
+          </article>
+          <article class="card metric">
+            <p>Acuracia media</p>
+            <strong id="dash-accuracy">0%</strong>
+          </article>
+        </div>
+        <article class="card">
+          <h3>Atalhos</h3>
+          <div class="quick-actions">
+            <button type="button" data-go="decks">Criar deck</button>
+            <button type="button" data-go="study">Iniciar estudo</button>
+            <button type="button" data-go="marketplace">Comprar deck</button>
+            <button type="button" data-go="tutor">Abrir tutor</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="view-auth" class="view">
+        <div class="panel-grid two">
+          <article class="card">
+            <h3>Entrar</h3>
+            <form id="login-form" class="form">
+              <label>Email<input required type="email" name="email" placeholder="tester@estuda.local"></label>
+              <label>Senha<input required type="password" name="password" placeholder="123456"></label>
+              <button type="submit">Login</button>
+            </form>
+          </article>
+          <article class="card">
+            <h3>Cadastrar</h3>
+            <form id="register-form" class="form">
+              <label>Nome<input required type="text" name="name" placeholder="Seu nome"></label>
+              <label>Email<input required type="email" name="email" placeholder="voce@exemplo.com"></label>
+              <label>Senha<input required type="password" name="password" placeholder="minimo 6"></label>
+              <button type="submit">Registrar</button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-profile" class="view">
+        <div class="panel-grid two">
+          <article class="card">
+            <h3>Dados do usuario</h3>
+            <pre id="profile-json" class="pre"></pre>
+          </article>
+          <article class="card">
+            <h3>Atualizar avatar</h3>
+            <form id="avatar-form" class="form">
+              <label>Avatar ID
+                <input required type="text" name="avatar_id" placeholder="robot_blue">
+              </label>
+              <button type="submit">Salvar avatar</button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-decks" class="view">
+        <div class="panel-grid two">
+          <article class="card">
+            <h3>Criar deck</h3>
+            <form id="deck-form" class="form">
+              <label>Titulo<input required type="text" name="title" placeholder="Historia do Brasil"></label>
+              <label>Descricao<textarea name="description" rows="3" placeholder="Resumo do deck"></textarea></label>
+              <label>Visibilidade
+                <select name="visibility">
+                  <option value="public">public</option>
+                  <option value="private">private</option>
+                  <option value="paid">paid</option>
+                </select>
+              </label>
+              <label>Preco
+                <input type="number" step="0.01" name="price" value="0">
+              </label>
+              <button type="submit">Criar deck</button>
+            </form>
+          </article>
+          <article class="card">
+            <h3>Criar flashcard manual</h3>
+            <form id="flashcard-form" class="form">
+              <label>Deck
+                <select name="deck_id" id="flashcard-deck-select"></select>
+              </label>
+              <label>Tipo
+                <select name="type">
+                  <option value="QA">QA</option>
+                  <option value="MULTIPLE">MULTIPLE</option>
+                  <option value="TRUE_FALSE">TRUE_FALSE</option>
+                </select>
+              </label>
+              <label>Pergunta<input required type="text" name="question"></label>
+              <label>Resposta<input required type="text" name="answer"></label>
+              <label>Opcoes (separadas por ;)
+                <input type="text" name="options" placeholder="A;B;C;D">
+              </label>
+              <button type="submit">Criar card</button>
+            </form>
+          </article>
+        </div>
+        <div class="panel-grid two">
+          <article class="card">
+            <h3>Geracao de cards com IA</h3>
+            <form id="ai-form" class="form">
+              <label>Deck
+                <select name="deck_id" id="ai-deck-select"></select>
+              </label>
+              <label>Tema<input required type="text" name="topic" placeholder="Fracoes"></label>
+              <label>Quantidade<input type="number" min="1" max="20" value="5" name="count"></label>
+              <label>Texto de apoio<textarea name="source_text" rows="4"></textarea></label>
+              <label class="inline"><input type="checkbox" name="persist" checked> Persistir cards no deck</label>
+              <button type="submit">Gerar cards</button>
+            </form>
+            <pre id="ai-result" class="pre"></pre>
+          </article>
+          <article class="card">
+            <h3>Decks disponiveis</h3>
+            <div id="decks-list" class="list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-study" class="view">
+        <div class="panel-grid two">
+          <article class="card">
+            <h3>Iniciar sessao</h3>
+            <form id="study-start-form" class="form">
+              <label>Deck
+                <select name="deck_id" id="study-deck-select"></select>
+              </label>
+              <button type="submit">Iniciar estudo</button>
+            </form>
+          </article>
+          <article class="card">
+            <h3>Estado da sessao</h3>
+            <pre id="study-session-state" class="pre"></pre>
+          </article>
+        </div>
+        <article class="card">
+          <h3>Responder card</h3>
+          <div id="study-card-box" class="study-card">Nenhuma sessao em andamento.</div>
+          <form id="study-answer-form" class="form">
+            <label>Sua resposta<input type="text" name="user_answer" id="study-answer-input"></label>
+            <div id="study-options" class="option-row"></div>
+            <button type="submit">Enviar resposta</button>
+          </form>
+          <button id="study-finish-btn" class="ghost" type="button">Finalizar sessao</button>
+          <pre id="study-result" class="pre"></pre>
+        </article>
+      </section>
+
+      <section id="view-marketplace" class="view">
+        <div class="panel-grid two">
+          <article class="card">
+            <h3>Marketplace</h3>
+            <div id="marketplace-list" class="list"></div>
+          </article>
+          <article class="card">
+            <h3>Minhas compras</h3>
+            <button id="refresh-purchases-btn" class="ghost" type="button">Atualizar compras</button>
+            <div id="purchases-list" class="list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-challenges" class="view">
+        <div class="panel-grid two">
+          <article class="card">
+            <h3>Desafios ativos e historico</h3>
+            <div id="challenges-list" class="list"></div>
+          </article>
+          <article class="card">
+            <h3>Detalhes do desafio</h3>
+            <pre id="challenge-details" class="pre">Selecione um desafio.</pre>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-tutor" class="view">
+        <div class="panel-grid two">
+          <article class="card">
+            <h3>Perguntar ao tutor</h3>
+            <form id="tutor-form" class="form">
+              <label>Deck (opcional)
+                <select name="deck_id" id="tutor-deck-select">
+                  <option value="">Sem deck especifico</option>
+                </select>
+              </label>
+              <label>Pergunta<textarea required rows="4" name="question" placeholder="Como melhorar minha acuracia em fracoes?"></textarea></label>
+              <button type="submit">Consultar tutor</button>
+            </form>
+          </article>
+          <article class="card">
+            <h3>Resposta do tutor</h3>
+            <pre id="tutor-result" class="pre"></pre>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-analytics" class="view">
+        <article class="card">
+          <h3>Resumo analitico</h3>
+          <button id="analytics-refresh-btn" class="ghost" type="button">Atualizar analytics</button>
+          <div id="analytics-metrics" class="panel-grid three"></div>
+        </article>
+        <article class="card">
+          <h3>Ultimos 7 dias</h3>
+          <div id="analytics-bars" class="bars"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <nav class="mobile-nav" id="mobile-menu">
+    <button data-view="dashboard" class="active">Dash</button>
+    <button data-view="decks">Decks</button>
+    <button data-view="study">Estudo</button>
+    <button data-view="marketplace">Shop</button>
+    <button data-view="analytics">Dados</button>
+  </nav>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
