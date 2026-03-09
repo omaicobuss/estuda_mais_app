@@ -10,7 +10,7 @@ Disponibilizar uma interface de navegacao completa no navegador para uso real do
 2. Organizar navegacao por modulos do produto (auth, estudo, marketplace, desafios, tutor, analytics)
 3. Implementar layout responsivo para desktop e mobile
 4. Adicionar suporte PWA (manifest + service worker + icones)
-5. Redirecionar `/` para `/app/` como ponto de entrada unico do frontend
+5. Redirecionar `/` para `/site/` (hotsite institucional) e manter `/app/` como entrada da SPA autenticada
 
 ## Arquivos implementados
 
@@ -21,6 +21,8 @@ Disponibilizar uma interface de navegacao completa no navegador para uso real do
 - `public/app/sw.js`
 - `public/app/icons/icon-192.svg`
 - `public/app/icons/icon-512.svg`
+- `public/site/index.html`
+- `public/site/styles.css`
 - `src/Controller/HomeController.php`
 
 ## Modulos da navegacao
@@ -57,4 +59,3 @@ Disponibilizar uma interface de navegacao completa no navegador para uso real do
 3. `php -S localhost:8080 -t public`
 4. abrir `http://localhost:8080/`
 5. autenticar com `tester@estuda.local / 123456`
-

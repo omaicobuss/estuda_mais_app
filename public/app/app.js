@@ -93,6 +93,22 @@ function byId(id) {
   return document.getElementById(id);
 }
 
+function setText(id, value) {
+  const element = byId(id);
+  if (element) {
+    element.textContent = String(value);
+  }
+}
+
+function firstNameOf(value) {
+  const text = String(value || "").trim();
+  if (text === "") {
+    return "Estudante";
+  }
+
+  return text.split(/\s+/)[0];
+}
+
 function safeJson(value) {
   try {
     return JSON.stringify(value, null, 2);
@@ -147,15 +163,72 @@ function hasSession() {
 function renderUserChip() {
   const chip = byId("user-chip");
   if (!hasSession()) {
-    chip.textContent = "Nao autenticado";
+    setText("user-chip", "Nao autenticado");
     applyAuthUiState();
+    updateDashboardSummary();
     return;
   }
 
   const user = state.session.user || {};
   const name = user.name || user.email || "Usuario";
-  chip.textContent = `${name} | XP ${user.xp ?? 0}`;
+  if (chip) {
+    chip.textContent = `${name} | XP ${user.xp ?? 0}`;
+  }
   applyAuthUiState();
+  updateDashboardSummary();
+}
+
+function updateDashboardSummary(analytics = null) {
+  const user = state.session?.user || {};
+  const logged = hasSession();
+  const overview = analytics?.overview || {};
+  const student = analytics?.student || {};
+
+  const sessions = Number(overview.sessions_finished ?? 0);
+  const accuracy = Number(overview.avg_accuracy ?? 0);
+  const xpWeek = Number(overview.xp_last_7_days ?? 0);
+  const due = Number(overview.reviews_due ?? 0);
+
+  const level = Number(user.level ?? student.level ?? 0);
+  const streak = Number(user.streak ?? student.streak ?? 0);
+  const ranking = student.ranking_position ?? "-";
+  const displayName = firstNameOf(user.name || user.email || "Estudante");
+
+  if (!logged) {
+    setText("home-greeting", "Seu painel de progresso");
+    setText("home-summary", "Acompanhe suas metricas e continue sua rotina de estudo com objetivo claro.");
+  } else {
+    setText("home-greeting", `Bom foco, ${displayName}.`);
+    setText(
+      "home-summary",
+      `Nos ultimos 7 dias: ${sessions} sessoes, ${accuracy.toFixed(1)}% de acuracia e ${xpWeek} XP acumulado.`
+    );
+  }
+
+  setText("dash-level", level);
+  setText("dash-streak", `${streak} dias`);
+  setText("dash-ranking", ranking);
+  setText("dash-due", due);
+  setText("dash-xp-week", xpWeek);
+
+  setText(
+    "dash-routine-1",
+    due > 0
+      ? `${due} reviews aguardando. Comece por elas para manter a memoria ativa.`
+      : "Sem reviews atrasadas. Momento ideal para estudar novo conteudo."
+  );
+  setText(
+    "dash-routine-2",
+    sessions > 0
+      ? `Voce ja concluiu ${sessions} sessao(oes) no periodo recente.`
+      : "Conclua ao menos 1 sessao para iniciar consistencia de estudo."
+  );
+  setText(
+    "dash-routine-3",
+    accuracy < 75
+      ? "Priorize criar cards de reforco para temas com baixa acuracia."
+      : "Sua acuracia esta boa. Evolua com cards de nivel avancado."
+  );
 }
 
 function applyAuthUiState() {
@@ -173,12 +246,16 @@ function applyAuthUiState() {
 
 function setView(view) {
   const target = viewMeta[view] ? view : "dashboard";
-  const requiresAuth = authRequiredViews.has(target);
-  if (requiresAuth && !hasSession()) {
-    setStatus("Faça login para acessar esta area.", "error");
-    state.currentView = "auth";
+  if (target === "auth" && hasSession()) {
+    state.currentView = "dashboard";
   } else {
-    state.currentView = target;
+    const requiresAuth = authRequiredViews.has(target);
+    if (requiresAuth && !hasSession()) {
+      setStatus("Faca login para acessar esta area.", "error");
+      state.currentView = "auth";
+    } else {
+      state.currentView = target;
+    }
   }
 
   for (const element of document.querySelectorAll(".view")) {
@@ -529,9 +606,10 @@ function renderAnalytics(analytics) {
     bars.appendChild(row);
   }
 
-  byId("dash-sessions").textContent = String(overview.sessions_finished ?? 0);
-  byId("dash-xp").textContent = String(overview.xp_total ?? 0);
-  byId("dash-accuracy").textContent = `${overview.avg_accuracy ?? 0}%`;
+  setText("dash-sessions", overview.sessions_finished ?? 0);
+  setText("dash-xp", overview.xp_total ?? 0);
+  setText("dash-accuracy", `${overview.avg_accuracy ?? 0}%`);
+  updateDashboardSummary(analytics);
 }
 
 async function loadAnalytics() {
@@ -636,7 +714,8 @@ function bindForms() {
 
   byId("register-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     try {
       await api("/auth/register", {
         method: "POST",
@@ -647,7 +726,7 @@ function bindForms() {
         },
       });
       setStatus("Cadastro concluido. Agora faca login.");
-      event.currentTarget.reset();
+      form.reset();
     } catch (error) {
       setStatus(error.message, "error");
     }
@@ -671,7 +750,8 @@ function bindForms() {
 
   byId("deck-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     try {
       const visibility = formData.get("visibility");
       const priceValue = Number(formData.get("price") || 0);
@@ -686,7 +766,7 @@ function bindForms() {
         },
       });
       setStatus("Deck criado.");
-      event.currentTarget.reset();
+      form.reset();
       await loadDecks();
     } catch (error) {
       setStatus(error.message, "error");
@@ -695,7 +775,8 @@ function bindForms() {
 
   byId("flashcard-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const optionsRaw = String(formData.get("options") || "");
     const options = optionsRaw
       .split(";")
@@ -715,7 +796,7 @@ function bindForms() {
         },
       });
       setStatus("Flashcard criado.");
-      event.currentTarget.reset();
+      form.reset();
       await loadDecks();
     } catch (error) {
       setStatus(error.message, "error");
@@ -930,3 +1011,4 @@ async function bootstrap() {
 }
 
 bootstrap();
+

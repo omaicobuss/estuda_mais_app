@@ -13,7 +13,13 @@ final class HomeController
     #[Route('/', methods: ['GET'])]
     public function index(Request $request): RedirectResponse
     {
-        return new RedirectResponse($this->appPath($request));
+        return new RedirectResponse($this->sitePath($request));
+    }
+
+    #[Route('/site', methods: ['GET'])]
+    public function siteEntry(Request $request): RedirectResponse
+    {
+        return new RedirectResponse($this->sitePath($request));
     }
 
     #[Route('/app', methods: ['GET'])]
@@ -27,5 +33,12 @@ final class HomeController
         $basePath = rtrim($request->getBasePath(), '/');
 
         return $basePath . '/app/';
+    }
+
+    private function sitePath(Request $request): string
+    {
+        $basePath = rtrim($request->getBasePath(), '/');
+
+        return $basePath . '/site/';
     }
 }

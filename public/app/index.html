@@ -10,7 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -54,32 +54,108 @@
       <section id="status-box" class="status hidden"></section>
 
       <section id="view-dashboard" class="view active">
-        <div class="panel-grid three">
-          <article class="card metric">
+        <article class="hero-panel">
+          <div>
+            <p class="eyebrow">Pagina inicial</p>
+            <h3 id="home-greeting">Seu painel de progresso</h3>
+            <p id="home-summary" class="hero-summary">Acompanhe suas metricas e continue sua rotina de estudo com objetivo claro.</p>
+            <div class="hero-actions">
+              <button type="button" data-go="study">Iniciar sessao</button>
+              <button type="button" class="ghost" data-go="decks">Criar deck</button>
+            </div>
+          </div>
+          <div class="hero-stats">
+            <article class="hero-stat">
+              <span>Nivel</span>
+              <strong id="dash-level">0</strong>
+            </article>
+            <article class="hero-stat">
+              <span>Streak</span>
+              <strong id="dash-streak">0 dias</strong>
+            </article>
+            <article class="hero-stat">
+              <span>Ranking</span>
+              <strong id="dash-ranking">-</strong>
+            </article>
+            <article class="hero-stat">
+              <span>Reviews pendentes</span>
+              <strong id="dash-due">0</strong>
+            </article>
+          </div>
+        </article>
+
+        <div class="panel-grid four">
+          <article class="card metric kpi">
             <p>Sessoes finalizadas</p>
             <strong id="dash-sessions">0</strong>
           </article>
-          <article class="card metric">
+          <article class="card metric kpi">
             <p>XP total</p>
             <strong id="dash-xp">0</strong>
           </article>
-          <article class="card metric">
+          <article class="card metric kpi">
             <p>Acuracia media</p>
             <strong id="dash-accuracy">0%</strong>
           </article>
+          <article class="card metric kpi">
+            <p>XP 7 dias</p>
+            <strong id="dash-xp-week">0</strong>
+          </article>
         </div>
-        <article class="card">
-          <h3>Atalhos</h3>
-          <div class="quick-actions">
-            <button type="button" data-go="decks">Criar deck</button>
-            <button type="button" data-go="study">Iniciar estudo</button>
-            <button type="button" data-go="marketplace">Comprar deck</button>
-            <button type="button" data-go="tutor">Abrir tutor</button>
-          </div>
-        </article>
+
+        <div class="panel-grid two">
+          <article class="card">
+            <h3>Atalhos por objetivo</h3>
+            <div class="quick-actions dashboard-quick-actions">
+              <button type="button" data-go="study">Estudar agora</button>
+              <button type="button" data-go="decks">Criar conteudo</button>
+              <button type="button" data-go="challenges">Entrar em desafio</button>
+              <button type="button" data-go="analytics">Ver analytics</button>
+              <button type="button" data-go="marketplace">Explorar marketplace</button>
+              <button type="button" data-go="tutor">Perguntar ao tutor</button>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Plano rapido de hoje</h3>
+            <ul class="routine-list">
+              <li>
+                <span class="routine-tag">1</span>
+                <div>
+                  <strong>Resolver revisoes pendentes</strong>
+                  <small id="dash-routine-1">Comece com as revisoes do dia para manter a retencao.</small>
+                </div>
+              </li>
+              <li>
+                <span class="routine-tag">2</span>
+                <div>
+                  <strong>Concluir pelo menos 1 sessao</strong>
+                  <small id="dash-routine-2">Mantenha ritmo continuo para fortalecer sua streak.</small>
+                </div>
+              </li>
+              <li>
+                <span class="routine-tag">3</span>
+                <div>
+                  <strong>Refinar conteudo</strong>
+                  <small id="dash-routine-3">Crie novos cards onde sua acuracia estiver baixa.</small>
+                </div>
+              </li>
+            </ul>
+          </article>
+        </div>
       </section>
 
       <section id="view-auth" class="view">
+        <article class="entry-intro">
+          <p class="eyebrow">Bem-vindo ao Estuda+</p>
+          <h3>Uma base unica para estudar, medir e evoluir</h3>
+          <p>Centralize seu fluxo de aprendizagem: monte decks, pratique, acompanhe desempenho e mantenha consistencia diaria.</p>
+          <div class="entry-badges">
+            <span>Flashcards + IA</span>
+            <span>Desafios e ranking</span>
+            <span>PWA desktop/mobile</span>
+          </div>
+        </article>
         <div class="panel-grid two">
           <article class="card">
             <h3>Entrar</h3>
